@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>6-1 LocalStorage set/get Item</title>
+</head>
+<style>
+    #box1{
+        margin:0 auto;
+        width:500px;
+        height:300px;
+        border:1px solid pink;
+        padding-left:100px;
+        /* //background-color:yellowgreen; */
+    }
+    #in{
+        width:200px;
+        height:40px;
+        margin-top:40px;
+        border: 1px solid orange;
+    }
+    li{
+        list-style: none;
+        float: left;
+        margin-left:10px;
+        background-color:rgb(238, 234, 234);
+        border:0.5px solid rgb(194, 190, 190);
+        margin-top:5px;
+    }
+    #btn{
+        height:38px;
+        width:100px;
+        color:grey;
+    }
+    #box2{
+        width:300px;
+        height:100px;
+        border:1px solid rgb(253, 176, 200);
+        font-size:13px;
+    }
+</style>
+
+<body>
+    <div id=box1>
+        <input type="search" id="in" placeholder="请输入想查找的商品" required/>
+        <button id="btn">搜索</button>
+        <button id="btn01">清除搜索记录</button>
+        <br/>
+        <span>最近搜索</span>
+        <br/>
+        <div id="box2">
+
+        </div>
+    </div>
+    
+</body>
+
+<script>
+    var inp=document.getElementById("in");
+    var d2=document.getElementById("box2");
+    var btn=document.getElementById("btn");
+     //清空搜索记录
+    var btn01=document.getElementById("btn01");
+    btn01.onclick=function(){
+        localStorage.clear();
+        window.location.reload();
+    }
+    //先获取历史记录
+    for(var i=localStorage.length-1;i>=0;i--){
+        var key = localStorage.key(i);
+        var value = localStorage.getItem(key);
+        //console.log(key+"+"+value);
+        var li=document.createElement("li");
+        var text=document.createTextNode(value);
+        li.appendChild(text);
+        d2.appendChild(li);
+    }
+    //主函数
+    btn.onclick=function(){
+        //获取value
+        var v=inp.value;
+        if(v==""){
+            alert("请输入想查找的商品");
+        }
+        else{
+        //获取时间
+        var now=new Date();
+        var h=now.getHours();
+        if(h<10){h="0"+h;}
+        var m=now.getMinutes();
+        if(m<10){m="0"+m;}
+        var s=now.getSeconds();
+        if(s<10){s="0"+s;}
+        var time=h+":"+m+":"+s;
+        //console.log(time,v);
+        //存储为键值对
+        localStorage.setItem(time,v);
+        //添加记录       
+        if(localStorage.length==0){
+            var d2=document.getElementById("box2");
+            var li=document.createElement("li");
+            var text=document.createTextNode(v);
+            li.appendChild(text);
+            d2.appendChild(li);
+            tag=false;
+            
+        } 
+        else{
+            var d2=document.getElementById("box2");
+            var lis=document.getElementsByTagName("li");
+            //console.log("啦啦啦"+lis.length);
+            var t=lis.length;
+            console.log(t);
+            var li=document.createElement("li");
+            var text=document.createTextNode(v);
+            li.appendChild(text);
+            d2.insertBefore(li,lis[0]);
+        }
+         //删除多余记录
+        var ll=document.getElementsByTagName("li");
+        console.log("li："+ll.length);
+        var sum=ll.length;
+        if(sum>4){
+            console.log(d2.lastElementChild);
+            d2.removeChild(d2.lastChild);
+        }
+        //删除键值对
+        if(localStorage.length>4){
+           localStorage.removeItem(localStorage.key(0));
+        }
+        }
+    }
+
+    
+    
+</script>
+</html>
